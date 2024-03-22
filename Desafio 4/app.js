@@ -1,5 +1,7 @@
 
-// Desafío 
+// Desafío 4
+
+// NOTA: En la carpeta models se encuentra un archivo ejemplos.json, el cual tiene ejemplos de productos
 
 // Herramientas 
 

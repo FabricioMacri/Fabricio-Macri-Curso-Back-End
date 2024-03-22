@@ -64,13 +64,13 @@ class CartManager {
     }
 
     // Agregar producto al carrito
-    async addProduct(_id, prodId) {
+    async addProduct(_id, prodId, quantity) {
 
         const cart = await this.getCarritoById(_id);
         const flag = cart.products.find(product => product.ID === prodId);
 
         if (flag) {
-            flag.stock += stock;
+            flag.quantity += quantity;
         } else {
             cart.products.push({ product: ID, stock });
         }
