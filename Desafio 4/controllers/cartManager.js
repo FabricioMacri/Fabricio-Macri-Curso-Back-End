@@ -1,4 +1,4 @@
-const fs = require("fs").promises;
+const fs = require("fs");
 
 class CartManager {
 
@@ -9,6 +9,15 @@ class CartManager {
 
     }
 
+    async getLastID() {
+
+        const flag = this.getCarts();
+        if (flag) {
+            return (flag[flag.lastIndexOf()].id + 1)
+        }
+        else { return 1}
+    }
+    
     // Método para obtener los carritos guardados
     async getCarts() {
 
@@ -36,7 +45,7 @@ class CartManager {
     async createCart() {
 
         const newCart = {
-            id: ++this.carts[carts.length],
+            id: getLastID(),
             products: []
         }
 
@@ -80,3 +89,5 @@ class CartManager {
     }
     
 }
+
+module.exports = CartManager;

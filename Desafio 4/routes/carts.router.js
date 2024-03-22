@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const ProductManager = require("../controllers/productManager.js");
-const productManager = new ProductManager("./models/products.json");
+const CartManager = require("../controllers/cartManager.js");
+const cartManager = new CartManager('./models/carts.json');
 
 // Ruta para crear un nuevo carrito
 router.post("/carts", async (req, res) => {
