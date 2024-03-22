@@ -12,6 +12,7 @@ router.get("/products", async (req, res) => {
     try {
         // Obtengo del body enviado el límite que indica el cliente y cargo la lista de productos con ProductManager
         const limit = req.query.limit;
+        console.log(limit);
         const productos = await productManager.getProducts();
 
         // Si el limite es un valor valido devuelvo una lista partida con el límite indicado
@@ -20,6 +21,7 @@ router.get("/products", async (req, res) => {
         } else {
 
             // Si el límite no esta especificado la devuelvo entera
+            console.log(productos);
             res.json(productos);
         }
     } 
@@ -34,10 +36,10 @@ router.get("/products", async (req, res) => {
 });
 
 // Obtener producto por ID
-router.get("/products/:id", async (req, res) => {
+router.get("/products/:pid", async (req, res) => {
 
     // Obtengo del body enviado el límite que indica el cliente
-    const id = req.params.id;
+    const id = req.params.pid;
 
     try {
         // Busco por ID el producto indicado por el cliente
@@ -81,8 +83,16 @@ router.put("/products/:pid", async (req, res) => {
     const id = req.params.pid;
     const newProduct = req.body; 
 
+    /*
+    BODY PARA ACTUALIZAR:
+    {
+        parameter: atributo a modificar
+        value: valor del atributo a modificar
+    }
+    */
+
     try {
-        await productManager.updateProduct(parseInt(id), newProduct);
+        await productManager.updateProduct(parseInt(id), newProduct.parameter, newProduct.value);
         res.status(201).json({message: "Producto actualizado exitosamente"});
     } 
     catch (error) {

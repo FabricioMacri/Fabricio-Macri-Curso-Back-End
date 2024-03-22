@@ -21,12 +21,16 @@ class ProductManager {
             const flag = this.products.some((el) => el.code === code);
             if(!flag){
 
+                // Traigo los productos que hay guardados en el JSON para actualizar la lista de ProductManager
+                let file = await fs.promises.readFile(this.path, 'utf-8');
+                file = JSON.parse(file);
+                this.products = file;
+
                 // Incremento en 1 el último ID registrado o en su defecto le asigno el valor 1
-                console.log("entro")
                 let newID = 1;
                 if(this.products.length != 0) { newID = this.products[this.products.length - 1].ID + 1; }
 
-                //(_ID, _tittle, _description, _code, _price, _stock, _category){
+                console.log(this.products);
                 const newProd = new Products(newID, product.tittle, product.description, product.code, product.price, product.stock, product.category);
                 this.products.push(newProd);
                 await fs.promises.writeFile(this.path, JSON.stringify(this.products));
@@ -43,7 +47,7 @@ class ProductManager {
 
         // Leo el archivo JSON y lo retorno como un objeto
         let file = await fs.promises.readFile(this.path, 'utf-8');
-        console.log(JSON.parse(file));
+        return JSON.parse(file);
 
     }
 
@@ -51,8 +55,8 @@ class ProductManager {
     async getProductById(id) {
 
         // Leo el archivo JSON y busco el id pasado por parametro
-        let file = await fs.promises.readFile(this.path, 'utf-8');
-        let data = JSON.parse(file);
+        const file = await fs.promises.readFile(this.path, 'utf-8');
+        const data = JSON.parse(file);
         
         const flag = data.some((el) => el.ID === id);
 
