@@ -6,7 +6,6 @@ class CartManager {
 
         this.path = _path;
         this.carts = this.getCarts();
-
     }
 
     async getLastID() {
@@ -22,10 +21,8 @@ class CartManager {
     async getCarts() {
 
         try {
-            console.log("Path: " + this.path)
             const data = await fs.readFile(this.path, "utf-8");
             if (data){
-                console.log("Data: " + data)
                 return data;
             }
             else { this.saveCarts();}

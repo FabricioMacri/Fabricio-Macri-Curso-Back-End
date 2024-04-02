@@ -46,7 +46,7 @@ class ProductManager {
     async getProducts() {
 
         // Leo el archivo JSON y lo retorno como un objeto
-        let file = await fs.promises.readFile(this.path, 'utf-8');
+        let file = await fs.readFile(this.path, "utf-8");
         return JSON.parse(file);
 
     }

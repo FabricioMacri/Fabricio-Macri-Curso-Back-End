@@ -1,46 +1,42 @@
 const express = require("express");
-const router = express.Router();
-
+const router = express.Router(); 
 const CartManager = require("../controllers/cartManager.js");
-const cartManager = new CartManager('./models/carts.json');
+const cartManager = new CartManager("./models/carts.json");
 
-// Ruta para crear un nuevo carrito
 router.post("/carts", async (req, res) => {
     try {
-        console.log(cartManager.path)
-        const newCart = await cartManager.createCart();
-        res.json(newCart);
+        const nuevoCarrito = await cartManager.crearCarrito();
+        res.json(nuevoCarrito);
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             error: "Error interno del servidor"
         });
     }
 })
 
-// Ruta para pedir un carrito por ID
+
 router.get("/carts/:cid", async (req, res) => {
     const cartId = parseInt(req.params.cid);
 
     try {
-        const cart = await cartManager.getCarritoById(cartId);
-        res.json(cart.products);
+        const carrito = await cartManager.getCarritoById(cartId);
+        res.json(carrito.products);
     } catch (error) {
         res.status(500).json({
-            error: "Error en el servidor"
+            error: "Error interno del servidor"
         });
     }
 })
 
-//Agrego un producto por id a un carrito tambien por id
+
 router.post("/carts/:cid/product/:pid", async (req, res) => {
     const cartId = parseInt(req.params.cid);
     const productId = req.params.pid;
     const quantity = req.body.quantity || 1; 
 
     try {
-        const updatedCart = await cartManager.addProduct(cartId,productId, quantity);
-        res.json(updatedCart.products);
+        const actualizarCarrito = await cartManager.agregarProductoAlCarrito(cartId,productId, quantity);
+        res.json(actualizarCarrito.products);
     } catch (error) {
         res.status(500).json({
             error: "Error interno del servidor"
@@ -49,4 +45,5 @@ router.post("/carts/:cid/product/:pid", async (req, res) => {
 
 })
 
-module.exports = router;
+
+module.exports = router; 
