@@ -1,0 +1,36 @@
+[
+    {
+        "ID": 2,
+        "tittle": "Smartwatch",
+        "description": "Limited edition item",
+        "code": "VU-259-WI",
+        "price": 609.8,
+        "status": true,
+        "stock": 303,
+        "category": "electronics",
+        "img": "Sin Imagen",
+        "thumbnail": []
+    },
+    {
+        "ID": 3,
+        "tittle": "Drone",
+        "description": "Limited edition item",
+        "code": "OV-278-SO",
+        "price": 883.27,
+        "status": true,
+        "stock": 930,
+        "category": "electronics",
+        "thumbnail": []
+    },
+    {
+        "ID": 4,
+        "tittle": "Drone",
+        "description": "Limited edition item",
+        "code": "OV-278-SO",
+        "price": 883.27,
+        "status": true,
+        "stock": 930,
+        "category": "electronics",
+        "thumbnail": []
+    }
+]
