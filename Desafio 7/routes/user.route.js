@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/user.model.js");
-const { createHash } = require("../utils/hashbcryp.js");
+const UserModel = require("../models/user.models.js");
+const { createHash } = require("../utils/hashbcrypt.js");
 
 //Post para generar un usuario y almacenarlo en MongoDB:
 
