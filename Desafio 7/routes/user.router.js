@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/user.models.js");
+const UserModel = require("../Dao/models/user.model.js");
 const { createHash } = require("../utils/hashbcrypt.js");
 
 //Post para generar un usuario y almacenarlo en MongoDB:
@@ -22,11 +22,10 @@ router.post("/", async (req, res) => {
         const newUser = await UserModel.create({ first_name, last_name, email, password: createHash(password), age, role });
 
         // Almacenar información del usuario en la sesión (puedes ajustarlo según tus necesidades)
-        req.session.login = true;
-        req.session.user = { ...newUser._doc };
+        //req.session.login = true;
+        //req.session.user = { ...newUser._doc };
 
-        //res.status(200).send({ message: "Usuario creado con éxito" });
-        res.redirect("/products");
+        res.status(200).send({ message: "Usuario creado con éxito" });
 
     } catch (error) {
         console.error("Error al crear el usuario:", error);

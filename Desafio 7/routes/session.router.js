@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/user.models.js");
+const UserModel = require("../Dao/models/user.model.js");
 const { isValidPassword } = require("../utils/hashbcrypt.js");
 
 //Login: 
