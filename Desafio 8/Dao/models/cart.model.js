@@ -1,11 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema({
-
-    user: String,
-    products: Array,
+  products: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Productos',
+        required: true
+      },
+      quantity: {
+        type: Number,
+        required: true
+      }
+    }
+  ]
 });
 
+// Middleware pre que realiza la población automáticamente
+cartSchema.pre('findOne', function (next) {
+  this.populate('products.product');
+  next();
+});
 
 const CartModel = mongoose.model("carts", cartSchema);
 

@@ -3,7 +3,6 @@ const router = express.Router();
 const UserModel = require("../Dao/models/user.model.js");
 const { isValidPassword } = require("../utils/hashbcrypt.js");
 
-//Login: 
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -36,7 +35,6 @@ router.post("/login", async (req, res) => {
 })
 
 
-//Logout: 
 
 router.get("/logout", (req, res) => {
     if (req.session.login) {

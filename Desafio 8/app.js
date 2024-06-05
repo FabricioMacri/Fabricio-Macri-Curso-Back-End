@@ -9,6 +9,7 @@ const productsRouter = require('./routes/products.router.js');
 const viewsRouter = require("./routes/views.router.js");
 const sessionRouter = require("./routes/session.router.js");
 const userRouter = require("./routes/user.router.js");
+const cartsRouter = require("./routes/carts.router.js");
 const app = express();
 const PUERTO = 8080;
 
@@ -25,9 +26,10 @@ app.set("views", "./views");
 
 // Routes
 app.use('/api/', productsRouter);
-app.use("/", viewsRouter);
+app.use("/views", viewsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionRouter);
+app.use("/api/carts", cartsRouter);
 
 // Listen
 const httpServer = app.listen(PUERTO, () => {
