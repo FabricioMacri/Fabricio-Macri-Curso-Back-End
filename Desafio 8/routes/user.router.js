@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
 
     try {
         //Verificamos si el usuario ya existe
-        const existeUsuario = await UsuarioModel.findOne({usuario});
+        const existeUsuario = await UserModel.findOne({usuario});
 
         if ( existeUsuario ) {
             return res.status(400).send("El usuario ya existe, moriraaas");
@@ -20,9 +20,9 @@ router.post("/register", async (req, res) => {
 
         //Si el usuario no existe, lo voy a crear: 
 
-        const nuevoUsuario = new UsuarioModel({
+        const nuevoUsuario = new UserModel({
             usuario,
-            password
+            password: createHash(password)
         });
 
         await nuevoUsuario.save();
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
 
     try {
         //1) Verificamos que el usuario ingresdo existe en nuestra Base de Datos: 
-        const usuarioEncontrado = await UsuarioModel.findOne({usuario:usuario});
+        const usuarioEncontrado = await UserModel.findOne({usuario:usuario});
         
 
         if ( !usuarioEncontrado ) {
