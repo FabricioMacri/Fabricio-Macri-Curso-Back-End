@@ -5,8 +5,6 @@ const cartManager = new CartManager();
 const CartModel = require("../models/cart.model.js");
 
 
-//1) Creamos un nuevo carrito: 
-
 router.post("/", async (req, res) => {
     try {
         const nuevoCarrito = await cartManager.crearCarrito();
@@ -17,7 +15,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-//2) Listamos los productos que pertenecen a determinado carrito. 
 
 router.get("/:cid", async (req, res) => {
     const cartId = req.params.cid;
@@ -37,7 +34,24 @@ router.get("/:cid", async (req, res) => {
     }
 });
 
-//3) Agregar productos a distintos carritos.
+
+router.post("/:cid/purchase", async (req, res) => {
+    const cartId = req.params.cid;
+
+    try {
+        const carrito = await CartModel.findById(cartId)
+            
+        if (!carrito) {
+            console.log("No existe ese carrito con el id");
+            return res.status(404).json({ error: "Carrito no encontrado" });
+        }
+
+        return res.json(carrito.products);
+    } catch (error) {
+        console.error("Error al obtener el carrito", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
 
 router.post("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
@@ -53,10 +67,6 @@ router.post("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-
-///Segunda Entrega: 
-
-//4) Eliminamos un producto especifico del carrito: 
 
 router.delete('/:cid/product/:pid', async (req, res) => {
     try {
@@ -79,7 +89,6 @@ router.delete('/:cid/product/:pid', async (req, res) => {
     }
 });
 
-//5) Actualizamos productos del carrito: 
 
 router.put('/:cid', async (req, res) => {
     const cartId = req.params.cid;
@@ -99,7 +108,6 @@ router.put('/:cid', async (req, res) => {
 });
 
 
-//6) Actualizamos las cantidades de productos
 
 router.put('/:cid/product/:pid', async (req, res) => {
     try {
@@ -123,7 +131,6 @@ router.put('/:cid/product/:pid', async (req, res) => {
     }
 });
 
-//7) Vaciamos el carrito: 
 
 router.delete('/:cid', async (req, res) => {
     try {
