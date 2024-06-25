@@ -89,12 +89,18 @@ class TicketManager {
         };
 
         try {
+            
             if(!cart && cart.length > 0) {
 
                 cart.forEach(cartProduct => {
                     
-                    const inventor = await ProductManager.getProductById(4);
+                    if(cartProduct.quantity < ProductManager.getProductById(cartProduct._id).quantity) {
+
+                        return false;
+                    }
                 });
+
+                return true;
             }
         } catch (error) {
             console.log("Error al leer los productos del carrito", error);

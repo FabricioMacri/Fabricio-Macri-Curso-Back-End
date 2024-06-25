@@ -31,8 +31,17 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['admin', 'usuario'],
         default: 'usuario'
-    }
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'carts'
+    },
 });
+
+userSchema.pre('findOne', function (next) {
+    this.populate('cart');
+    next();
+  });
 
 const UserModel = mongoose.model("user", userSchema);
 

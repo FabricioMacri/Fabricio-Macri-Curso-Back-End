@@ -18,8 +18,8 @@ router.post("/login", async (req, res) => {
                     last_name: usuario.last_name,
                     role: usuario.role
                 };
-
-                res.redirect("/views/products");
+                
+                res.redirect("/api/carts");
             } else {
                 res.status(401).send({ error: "Contraseña no valida" });
             }
@@ -28,7 +28,8 @@ router.post("/login", async (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).send({ error: "Error en el login" });
+        console.log(error)
+        res.status(400).send({ mensaje: "Error en el login" });
     }
 })
 

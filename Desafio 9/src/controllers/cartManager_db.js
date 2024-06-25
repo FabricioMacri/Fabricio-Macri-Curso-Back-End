@@ -1,4 +1,5 @@
 const CartModel = require("../models/cart.model.js");
+const UserModel = require("../models/user.model.js");
 
 class CartManager {
     async crearCarrito() {
@@ -44,6 +45,28 @@ class CartManager {
         } catch (error) {
             console.log("error al agregar un producto", error);
         }
+    }
+
+    async asignarCarrito(cartId, userEmail) {
+
+        try {
+            const usuario = await UserModel.findOne({ email: userEmail });
+            if (usuario) {
+                usuario.cart = cartId;
+            } else {
+                console.log("No se encuentra al usuario al que quiere asignar el carrito");
+                return null;
+            }
+
+            usuario.markModified("cart");
+
+            await usuario.save();
+            return cartId;
+
+        } catch (error) {
+            console.log("error al asignar el carrito", error);
+        }
+
     }
 
     async eliminarProductoDelCarrito(cartId, productId) {

@@ -5,10 +5,14 @@ const cartManager = new CartManager();
 const CartModel = require("../models/cart.model.js");
 
 
-router.post("/", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
-        const nuevoCarrito = await cartManager.crearCarrito();
-        res.json(nuevoCarrito);
+        if(!req.session.user.cart) {
+            const nuevoCarrito = await cartManager.crearCarrito();
+            const cartID = await cartManager.asignarCarrito(nuevoCarrito._id, req.session.user.email);
+            req.session.user.cart = await cartID.toString();
+        }
+        res.redirect("/views/products");
     } catch (error) {
         console.error("Error al crear un nuevo carrito", error);
         res.status(500).json({ error: "Error interno del servidor" });
@@ -60,7 +64,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
     try {
         const actualizarCarrito = await cartManager.agregarProductoAlCarrito(cartId, productId, quantity);
-        res.json(actualizarCarrito.products);
+        res.redirect("/views/products");
     } catch (error) {
         console.error("Error al agregar producto al carrito", error);
         res.status(500).json({ error: "Error interno del servidor" });

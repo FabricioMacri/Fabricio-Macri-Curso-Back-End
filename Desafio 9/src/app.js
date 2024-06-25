@@ -47,6 +47,14 @@ app.set("views", "./src/views");
 
 
 // Routes
+app.get("/", (req, res) => {
+    if (req.session.login) {
+        return res.redirect("/views/products");
+    }
+ 
+    res.render("login");
+ });
+
 app.use('/api', productsRouter);
 app.use("/views", viewsRouter);
 app.use("/api/users", userRouter);
