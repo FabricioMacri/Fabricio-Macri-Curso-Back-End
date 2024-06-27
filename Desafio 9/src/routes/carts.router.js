@@ -5,8 +5,8 @@ const CartManager = require("../controllers/cartManager_db.js");
 const cartManager = new CartManager();
 const CartModel = require("../models/cart.model.js");
 
-const ProductManager = require("../controllers/productManager_db.js");
-const productManager = new ProductManager();
+const TicketManager = require("../controllers/ticket.controller.js");
+const ticketManager = new TicketManager();
 
 
 router.get("/", async (req, res) => {
@@ -52,34 +52,21 @@ router.post("/:cid/purchase", async (req, res) => {
     const cartId = req.params.cid;
 
     try {
-        const carrito = await CartModel.findById(cartId)
-            
-        if (!carrito) {
-            console.log("No existe ese carrito con el id");
-            return res.status(404).json({ error: "Carrito no encontrado" });
+
+        const code = req.session.user.first_name[0] + "-" + cartId + "-" + req.session.user.last_name[0];
+        
+        const ticket = await ticketManager.addTicket( code, req.session.user.email, cartId);
+
+        if (ticket) {
+            console.log("Ticket aprobado!");
+            res.redirect("/views/products");
         } else {
-            let total = 0;
-            carrito.products.forEach((producto) => {
-
-                const flag = productManager.getProductById(producto.product._id);
-                if (flag) {
-
-                    const chekStock = producto.product.stock - producto.quantity;
-
-                    if (chekStock < 0) {
-
-                        res.status(400).json({ mensaje : "La compra no se aprobo por falta de stock" });
-                    }
-                } else {
-                    res.status(404).json({ mensaje : "La compra no se aprobo porque uno de los productos no fue encontrado" });
-                }
-                total += producto.product.price * producto.quantity;
-            });
-            res.status(200).json({ mensaje : "La compra fue aprobada" });
-
+            console.log("Hubo problemas con el ticket ");
+            res.status(400).json({mensaje : "Hubo problemas con el ticket"});
         }
+
     } catch (error) {
-        console.error("Error al obtener el carrito", error);
+        console.error("Error al procesar la compra", error);
         res.status(500).json({ error: "Error interno del servidor" });
     }
 });

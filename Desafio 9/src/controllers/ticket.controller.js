@@ -3,12 +3,15 @@ const TicketModel = require("../models/ticket.model.js");
 const ProductManager = require("../controllers/productManager_db.js");
 const productManager = new ProductManager();
 
+const CartModel = require("../models/cart.model.js");
+
+
 class TicketManager {
 
-    async addTicket({ code, purchaser, cartId}) { // HAY QUE PROBAR ESTA VAINA PARSE
+    async addTicket( code, purchaser, cartId) {
         try {
 
-            if (!code || !amount || !purchaser) {
+            if (!code || !cartId || !purchaser) {
                 console.log("Todos los campos son obligatorios");
                 return;
             }
@@ -20,7 +23,7 @@ class TicketManager {
                 return;
             }
 
-            const Total = this.chekProducts(cartId);
+            const Total = await this.chekProducts(cartId);
 
             if (!Total) {
 
@@ -28,13 +31,17 @@ class TicketManager {
                 return;
             }
 
+            console.log(Total);
+
             const newTicket = new TicketModel({
                 code,
-                amount:Total,
+                amount: Total,
                 purchaser
             });
 
             await newTicket.save();
+
+            return newTicket;
 
         } catch (error) {
             console.log("Error al agregar ticket", error);

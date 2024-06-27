@@ -77,9 +77,8 @@ router.get("/carts/:cid", async (req, res) => {
 
          total += producto.product.price * producto.quantity;
       });
-      console.log(total);
 
-      res.render("carts", { productos: productosEnCarrito, total : total });
+      res.render("carts", { productos: productosEnCarrito, total : total, cart:cartId });
    } catch (error) {
       console.error("Error al obtener el carrito", error);
       res.status(500).json({ error: "Error interno del servidor"

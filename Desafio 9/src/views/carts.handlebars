@@ -17,7 +17,7 @@
     {{/each}}
 
 </div>
-<form action="" style="margin-left: 1rem;">
+<form action="/api/carts/{{cart}}/purchase" method="post" style="margin-left: 1rem;">
   <label class="form-label" for="total">Total: ${{total}}</label> <br> <br>
   <button class="btn btn-success" type="submit">Realizar compra</button>
 </form>
