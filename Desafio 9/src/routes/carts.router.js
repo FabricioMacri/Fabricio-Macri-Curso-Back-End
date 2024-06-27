@@ -1,16 +1,25 @@
 const express = require("express");
 const router = express.Router();
+
 const CartManager = require("../controllers/cartManager_db.js");
 const cartManager = new CartManager();
 const CartModel = require("../models/cart.model.js");
+
+const ProductManager = require("../controllers/productManager_db.js");
+const productManager = new ProductManager();
 
 
 router.get("/", async (req, res) => {
     try {
         if(!req.session.user.cart) {
-            const nuevoCarrito = await cartManager.crearCarrito();
-            const cartID = await cartManager.asignarCarrito(nuevoCarrito._id, req.session.user.email);
-            req.session.user.cart = await cartID.toString();
+            const carrito = await cartManager.linkedCart(req.session.user.email);
+            if (!carrito) {
+                const nuevoCarrito = await cartManager.crearCarrito();
+                const cartID = await cartManager.asignarCarrito(nuevoCarrito._id, req.session.user.email);
+                req.session.user.cart = await cartID.toString();
+            } else {
+                req.session.user.cart = carrito;
+            }
         }
         res.redirect("/views/products");
     } catch (error) {
@@ -48,18 +57,37 @@ router.post("/:cid/purchase", async (req, res) => {
         if (!carrito) {
             console.log("No existe ese carrito con el id");
             return res.status(404).json({ error: "Carrito no encontrado" });
-        }
+        } else {
+            let total = 0;
+            carrito.products.forEach((producto) => {
 
-        return res.json(carrito.products);
+                const flag = productManager.getProductById(producto.product._id);
+                if (flag) {
+
+                    const chekStock = producto.product.stock - producto.quantity;
+
+                    if (chekStock < 0) {
+
+                        res.status(400).json({ mensaje : "La compra no se aprobo por falta de stock" });
+                    }
+                } else {
+                    res.status(404).json({ mensaje : "La compra no se aprobo porque uno de los productos no fue encontrado" });
+                }
+                total += producto.product.price * producto.quantity;
+            });
+            res.status(200).json({ mensaje : "La compra fue aprobada" });
+
+        }
     } catch (error) {
         console.error("Error al obtener el carrito", error);
         res.status(500).json({ error: "Error interno del servidor" });
     }
 });
 
-router.post("/:cid/product/:pid", async (req, res) => {
-    const cartId = req.params.cid;
-    const productId = req.params.pid;
+router.post("/addProduct", async (req, res) => {
+
+    const cartId = req.body.cart;
+    const productId = req.body.product;
     const quantity = req.body.quantity || 1;
 
     try {

@@ -1,9 +1,11 @@
 const TicketModel = require("../models/ticket.model.js");
-const ProductManager = require("./productManager_db.js");
+
+const ProductManager = require("../controllers/productManager_db.js");
+const productManager = new ProductManager();
 
 class TicketManager {
 
-    async addTicket({ code, amount, purchaser }) {
+    async addTicket({ code, purchaser, cartId}) { // HAY QUE PROBAR ESTA VAINA PARSE
         try {
 
             if (!code || !amount || !purchaser) {
@@ -18,9 +20,17 @@ class TicketManager {
                 return;
             }
 
+            const Total = this.chekProducts(cartId);
+
+            if (!Total) {
+
+                console.log("Hubo problemas con los productos");
+                return;
+            }
+
             const newTicket = new TicketModel({
                 code,
-                amount,
+                amount:Total,
                 purchaser
             });
 
@@ -47,22 +57,6 @@ class TicketManager {
         }
     }
 
-    async updateTicket(id, ticketActualizado) {
-        try {
-
-            const updateado = await TicketModel.findByIdAndUpdate(id, ticketActualizado);
-
-            if (!updateado) {
-                console.log("No se pudo encontrar el ticket");
-                return null;
-            }
-
-            return updateado;
-        } catch (error) {
-            console.log("Error al actualizar el ticket", error);
-
-        }
-    }
 
     async deleteTicket(id) {
         try {
@@ -80,31 +74,41 @@ class TicketManager {
         }
     }
 
-    async chekProducts(cart) {
-
-        const result = {
-
-            whiteList : [],
-            blackList : []
-        };
+    async chekProducts(cartId) {
 
         try {
-            
-            if(!cart && cart.length > 0) {
-
-                cart.forEach(cartProduct => {
-                    
-                    if(cartProduct.quantity < ProductManager.getProductById(cartProduct._id).quantity) {
-
+            const carrito = await CartModel.findById(cartId)
+                
+            if (!carrito) {
+                consol.log("La compra no se aprobo porque no se encuentra el carrito");
+                return false;
+            } else {
+                let total = 0;
+                carrito.products.forEach((producto) => {
+    
+                    const flag = productManager.getProductById(producto.product._id);
+                    if (flag) {
+    
+                        const chekStock = producto.product.stock - producto.quantity;
+    
+                        if (chekStock < 0) {
+    
+                            consol.log("La compra no se aprobo por falta de stock");
+                            return false;
+                        } else {
+                            total += producto.product.price * producto.quantity;
+                        }
+                    } else {
+                        consol.log("La compra no se aprobo porque uno de los productos no fue encontrado");
                         return false;
                     }
                 });
-
-                return true;
+                return total;
+    
             }
         } catch (error) {
-            console.log("Error al leer los productos del carrito", error);
-            throw error;
+            console.error("Error al obtener el carrito", error);
+            res.status(500).json({ error: "Error interno del servidor" });
         }
     }
 }

@@ -34,6 +34,7 @@ const userSchema = mongoose.Schema({
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
+        default: '',
         ref: 'carts'
     },
 });

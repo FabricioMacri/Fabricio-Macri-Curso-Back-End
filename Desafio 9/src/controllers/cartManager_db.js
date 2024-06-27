@@ -29,7 +29,8 @@ class CartManager {
     async agregarProductoAlCarrito(cartId, productId, quantity = 1) {
         try {
             const carrito = await this.getCarritoById(cartId);
-            const existeProducto = carrito.products.find(item => item.product.toString() === productId);
+            const existeProducto = carrito.products.find(item => item.product._id.toString() == productId);
+            console.log(existeProducto);
 
             if (existeProducto) {
                 existeProducto.quantity += quantity;
@@ -47,14 +48,38 @@ class CartManager {
         }
     }
 
-    async asignarCarrito(cartId, userEmail) {
+    async linkedCart(userEmail) {
 
         try {
             const usuario = await UserModel.findOne({ email: userEmail });
             if (usuario) {
-                usuario.cart = cartId;
+                if (!usuario.cart) {
+                    return null
+                } else {
+                    return usuario.cart._id.toString();
+                }
             } else {
                 console.log("No se encuentra al usuario al que quiere asignar el carrito");
+                return null;
+            }
+
+        } catch (error) {
+            console.log("error al asignar el carrito", error);
+        }
+
+    }
+
+    async asignarCarrito(cartId, userEmail) {
+
+        try {
+            const flag = await this.linkedCart(userEmail);
+            const usuario = await UserModel.findOne({ email: userEmail });
+            console.log(usuario);
+
+            if (!flag) {
+
+                usuario.cart = cartId;
+            } else {
                 return null;
             }
 
