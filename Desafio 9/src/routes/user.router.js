@@ -2,11 +2,15 @@ const express = require("express");
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = express.Router();
+
 const UserModel = require("../models/user.model.js");
 const { createHash } = require("../utils/hashbcrypt.js");
 
+const ErrorHandler = require('../utils/error/errorHandler.js');
+const errorHandler = new ErrorHandler();
 
 
+//Register
 router.post("/register", async (req, res) => {
     const { first_name, last_name, email, password, age } = req.body;
 
@@ -35,6 +39,30 @@ router.post("/register", async (req, res) => {
         res.status(500).send({ error: "Error interno del servidor" });
     }
 
+})
+
+//User
+router.get("/:uid", async (req, res) => {
+    
+    try {
+
+        const userID = await req.params.uid;
+
+        errorHandler.numeric(userID);
+
+        if (errorHandler.code !== 0) {
+
+            res.status(400).json({ERROR:errorHandler});
+        }
+
+        const user = UserModel.findOne({id_:userID});
+
+        res.status(200).json({user:user});
+        
+    } catch (error) {
+        res.status(500).send("Error interno del servidor: " + error);
+    }
+    
 })
 
 //Login: 
