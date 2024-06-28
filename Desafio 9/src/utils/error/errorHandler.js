@@ -43,10 +43,12 @@ class errorHandler {
 
         if (this.nullChek(input)) {
 
-            if (Number.isInteger(input)){
+            const integer = Number.parseInt(input);
+            if (integer !== NaN){
 
                 if (input > 0) {
-                    return
+                    this.code = 0;
+                    return;
                 }
             }
         }

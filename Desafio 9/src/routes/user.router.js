@@ -21,7 +21,7 @@ router.post("/register", async (req, res) => {
             return res.status(400).send({ error: "El correo electrónico ya está registrado" });
         }
 
-        // Definir el rol del usuario
+        // Definir el rol del usuario 
         const role = email === 'admincoder@coder.com' ? 'admin' : 'usuario';
 
         // Crear un nuevo usuario
@@ -52,12 +52,13 @@ router.get("/:uid", async (req, res) => {
 
         if (errorHandler.code !== 0) {
 
-            res.status(400).json({ERROR:errorHandler});
+            return res.status(400).json({ERROR:errorHandler});
+        } else {
+
+            return res.status(200).json({mensaje:"El ID enviado es valido"});
         }
-
-        const user = UserModel.findOne({id_:userID});
-
-        res.status(200).json({user:user});
+        
+       
         
     } catch (error) {
         res.status(500).send("Error interno del servidor: " + error);
